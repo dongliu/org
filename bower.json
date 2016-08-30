@@ -1,0 +1,25 @@
+{
+  "name": "org",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Dong Liu <edongliu@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/dongliu/org",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "2.2.4",
+    "bootstrap": "3.3.6",
+    "components-font-awesome": "4.6.3",
+    "holderjs": "2.9.3",
+    "moment": "2.14.1"
+  }
+}
