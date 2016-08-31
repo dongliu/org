@@ -1,0 +1,13 @@
+{
+  "apps" : [{
+    "name": "org",
+    "script": "bin/www",
+    "env": {
+      "NODE_ENV": "production"
+    },
+  "error_file"      : "logs/err.log",
+  "out_file"        : "logs/out.log",
+  "merge_logs"      : true,
+  "log_date_format" : "YYYY-MM-DD HH:mm:ss Z"
+  }]
+}
