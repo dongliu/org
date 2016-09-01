@@ -2,24 +2,87 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
+var rotator = require('file-stream-rotator');
+var log = require('./lib/log');
 var bodyParser = require('body-parser');
+
+
+var config = require('./config/config.js');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
 
+
+// mongoDB starts
+var mongoose = require('mongoose');
+mongoose.connection.close();
+
+var mongoOptions = {
+  db: {
+    native_parser: true
+  },
+  server: {
+    poolSize: 5,
+    socketOptions: {
+      connectTimeoutMS: 30000,
+      keepAlive: 1
+    }
+  }
+};
+
+var mongoURL = 'mongodb://' + (config.mongo.address || 'localhost') + ':' + (config.mongo.port || '27017') + '/' + (config.mongo.db || 'org');
+
+if (config.mongo.user && config.mongo.pass) {
+  mongoOptions.user = config.mongo.user;
+  mongoOptions.pass = config.mongo.pass;
+}
+
+if (config.mongo.auth) {
+  mongoOptions.auth = config.mongo.auth;
+}
+
+mongoose.connection.on('connected', function () {
+  log.info('Mongoose default connection opened.');
+});
+
+mongoose.connection.on('error', function (err) {
+  log.error('Mongoose default connection error: ' + err);
+});
+
+mongoose.connection.on('disconnected', function () {
+  log.warn('Mongoose default connection disconnected');
+});
+
+mongoose.connect(mongoURL, mongoOptions);
+// mongoDB ends
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
+if (app.get('env') === 'production') {
+  var logStream = rotator.getStream({
+    filename: path.resolve(config.app.log_dir, 'access.log'),
+    frequency: 'daily'
+  });
+  app.use(logger('combined', {
+    stream: logStream
+  }));
+}
+
+if (app.get('env') === 'development') {
+  app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', routes);
 app.use('/users', users);
