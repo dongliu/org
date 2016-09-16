@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var log = require('../lib/log');
 
 var EmployeeList = mongoose.model('EmployeeList');
+var getEmployeeList = require('../lib/active-employee-list').getEmployeeList;
 
 employees.get('/', function (req, res) {
   res.send('need a resource view');
@@ -34,7 +35,7 @@ employees.get('/year/:y/month/:m/day/:d/json', function (req, res) {
     if (list) {
       return res.json(list);
     }
-    // fetch from API, send, and save
+    return res.status(404).send('cannot find the list for ' + req.params.year + '-' + req.params.month + '-' + req.params.day + '.');
   });
 
 });
