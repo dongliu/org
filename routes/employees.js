@@ -35,6 +35,7 @@ employees.get('/year/:y/month/:m/day/:d/json', function (req, res) {
     if (list) {
       return res.json(list);
     }
+    // check if today
     return res.status(404).send('cannot find the list for ' + req.params.year + '-' + req.params.month + '-' + req.params.day + '.');
   });
 
