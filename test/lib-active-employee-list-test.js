@@ -55,7 +55,7 @@ describe('lib/active-employee-list', function () {
 
   describe('#getEmployeeList()', function () {
     it('get the current employee list', function (done) {
-      getEmployeeList(function (err, response, list) {
+      getEmployeeList(true, function (err, response, list) {
         assert.ifError(err);
         if (err) {
           return done(err);

@@ -53,6 +53,7 @@ describe('lib/task-schedule', function () {
       var time = 0;
       // run every 2 minutes
       var job = employeeListJob('*/2 * * * *', function (err) {
+        // called when list saved
         assert.ifError(err);
         if (err) {
           done(err);
