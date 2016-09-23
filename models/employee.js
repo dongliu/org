@@ -46,30 +46,40 @@ var activeEmployeeList = new Schema({
   year: {
     type: Number,
     required: true,
-    default: new Date().getUTCFullYear()
+    default: function () {
+      return new Date().getUTCFullYear();
+    }
   },
   month: {
     type: Number,
     required: true,
-    default: new Date().getUTCMonth()
+    default: function () {
+      return new Date().getUTCMonth() + 1
+    }
   },
   day: {
     type: Number,
     required: true,
-    default: new Date().getUTCDay()
+    default: function () {
+      return new Date().getUTCDate();
+    }
   },
   hours: {
     type: Number,
-    default: new Date().getUTCHours()
+    default: function () {
+      return new Date().getUTCHours();
+    }
   },
   employees: [employee]
 });
 
 // a compound index for date
-activeEmployeeList.index({year: 1, month: 1, day: 1, hours: 1});
-
-// a multikey index for employee
-activeEmployeeList.index({'employees.id' : 1});
+activeEmployeeList.index({
+  year: 1,
+  month: 1,
+  day: 1,
+  hours: 1
+});
 
 var EmployeeList = mongoose.model('EmployeeList', activeEmployeeList);
 
