@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var employee = new Schema({
+var employeeIFS = {
   _id: {
     type: String,
     lowercase: true,
@@ -39,39 +39,36 @@ var employee = new Schema({
     type: String,
     trim: true
   }
-});
+};
 
+var employee = new Schema(employeeIFS);
 
 var activeEmployeeList = new Schema({
   year: {
     type: Number,
-    required: true,
-    default: function () {
-      return new Date().getUTCFullYear();
-    }
+    required: true
   },
   month: {
     type: Number,
-    required: true,
-    default: function () {
-      return new Date().getUTCMonth() + 1
-    }
+    required: true
   },
   day: {
     type: Number,
-    required: true,
-    default: function () {
-      return new Date().getUTCDate();
-    }
+    required: true
   },
   hours: {
-    type: Number,
-    default: function () {
-      return new Date().getUTCHours();
-    }
+    type: Number
   },
   employees: [employee]
 });
+
+activeEmployeeList.methods.setDate2Now = function () {
+  var date = new Date();
+  this.year = date.getUTCFullYear();
+  this.month = date.getUTCMonth() + 1;
+  this.day = date.getUTCDate();
+  this.hours = date.getUTCHours();
+}
 
 // a compound index for date
 activeEmployeeList.index({
@@ -82,7 +79,9 @@ activeEmployeeList.index({
 });
 
 var EmployeeList = mongoose.model('EmployeeList', activeEmployeeList);
+var Employee = mongoose.model('Employee', employee);
 
 module.exports = {
-  EmployeeList: EmployeeList
+  EmployeeList: EmployeeList,
+  Employee : Employee
 };

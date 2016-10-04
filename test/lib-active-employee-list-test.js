@@ -66,9 +66,9 @@ describe('lib/active-employee-list', function () {
           _id = list._id;
           assert.equal(list.year, date.getUTCFullYear());
           year = list.year;
-          assert.equal(list.month, date.getUTCMonth());
+          assert.equal(list.month, date.getUTCMonth() + 1);
           month = list.month;
-          assert.equal(list.day, date.getUTCDay());
+          assert.equal(list.day, date.getUTCDate());
           day = list.day;
           assert.equal(list.hours, date.getUTCHours());
           // lower case and sorted
