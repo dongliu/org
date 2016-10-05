@@ -12,8 +12,8 @@ employees.get('/', function (req, res) {
 employees.get('/today', function (req, res) {
   var today = new Date();
   var y = today.getUTCFullYear();
-  var m = today.getUTCMonth();
-  var d = today.getUTCDay();
+  var m = today.getUTCMonth() + 1;
+  var d = today.getUTCDate();
   res.redirect('year' + y + '/month' + m + '/day' + d);
 });
 
