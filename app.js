@@ -5,9 +5,9 @@ var logger = require('morgan');
 var rotator = require('file-stream-rotator');
 var log = require('./lib/log');
 var bodyParser = require('body-parser');
+var debug = require('debug')('org:app');
 
-
-var config = require('./config/config.js');
+var config = require('config');
 
 var routes = require('./routes/index');
 var employees = require('./routes/employees');
@@ -36,21 +36,21 @@ var mongoOptions = {
   }
 };
 
-var mongoURL = 'mongodb://' + (config.mongo.address || 'localhost') + ':' + (config.mongo.port || '27017') + '/' + (config.mongo.db || 'org');
+var mongoURL = 'mongodb://' + (config.get('mongo.address') || 'localhost') + ':' + (config.get('mongo.port') || '27017') + '/' + (config.get('mongo.db') || 'org');
 
-if (config.mongo.user && config.mongo.pass) {
-  mongoOptions.user = config.mongo.user;
-  mongoOptions.pass = config.mongo.pass;
+if (config.has('mongo.user') && config.has('mongo.pass')) {
+  mongoOptions.user = config.get('mongo.user');
+  mongoOptions.pass = config.get('mongo.pass');
 }
 
-if (config.mongo.auth) {
-  mongoOptions.auth = config.mongo.auth;
+if (config.has('mongo.auth')) {
+  mongoOptions.auth = config.get('mongo.auth');
 }
 
-mongoose.connection.on('connected', function () {
+mongoose.connection.once('connected', function () {
   log.info('Mongoose default connection opened.');
   // start the daily jobs
-  dailyELJ = employeeListJob(config.service.schedule, function (err) {
+  dailyELJ = employeeListJob(config.get('service.schedule'), function (err) {
     if (err) {
       log.error(err);
     } else {
@@ -84,7 +84,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 if (app.get('env') === 'production') {
   var logStream = rotator.getStream({
-    filename: path.resolve(config.app.log_dir, 'access.log'),
+    filename: path.resolve(config.get('app.log_dir'), 'access.log'),
     frequency: 'daily'
   });
   app.use(logger('combined', {
