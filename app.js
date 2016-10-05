@@ -21,7 +21,7 @@ var dailyELJ;
 // mongoDB starts
 var mongoose = require('mongoose');
 mongoose.connection.close();
-
+mongoose.Promise = global.Promise;
 
 var mongoOptions = {
   db: {
