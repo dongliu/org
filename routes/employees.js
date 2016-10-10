@@ -23,9 +23,9 @@ employees.get('/year/:y/month/:m/day/:d', function (req, res) {
 
 employees.get('/year/:y/month/:m/day/:d/json', function (req, res) {
   EmployeeList.findOne({
-    year: req.params.y,
-    month: req.params.m,
-    day: req.params.d
+    year: Number(req.params.y),
+    month: Number(req.params.m),
+    day: Number(req.params.d)
   }, function (err, list) {
     if (err) {
       log.error(err);
