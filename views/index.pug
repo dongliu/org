@@ -1,5 +1,21 @@
 extends layout
 
+block head
+  title FRIB org application
+
 block content
-  h1= title
-  p Welcome to #{title}
+  .main
+    h1 employees and organization changes
+    hr.soften
+    .row
+      .col-md-6.col-sm-6.col-xs-12
+        h1
+          a(href='/employees/')
+            i.fa.fa-users.fa-4x
+        h2 Employees
+      .col-md-6.col-sm-6.col-xs-12
+        h1
+          a(href='/orgcharts/')
+            i.fa.fa-institution.fa-4x
+        h2 Org chart
+    hr.soften
