@@ -69,7 +69,6 @@ describe('lib/active-employee-list', function () {
           return done(err);
         }
         var date = new Date();
-        var temp = 'a';
         if (list) {
           assert.equal(list.year, date.getUTCFullYear());
           year = list.year;
@@ -78,11 +77,9 @@ describe('lib/active-employee-list', function () {
           assert.equal(list.day, date.getUTCDate());
           day = list.day;
           assert.equal(list.hours, date.getUTCHours());
-          // lower case and sorted
+          // lower case
           list.employees.forEach(function (e) {
-            assert.equal(e._id, e._id.toLowerCase());
-            assert.ok(e._id > temp);
-            temp = e._id;
+            assert.equal(e.person_id, e.person_id.toLowerCase());
           });
           done();
         } else {
@@ -132,7 +129,6 @@ describe('lib/active-employee-list', function () {
           return done(err);
         }
         if (list) {
-          // assert.equal(list._id, _id.toString());
           eList = list;
           done();
         } else {
@@ -158,6 +154,9 @@ describe('lib/active-employee-list', function () {
         if (o) {
           debug(Object.keys(o.employees).length);
           assert.equal(Object.keys(o.employees).length, eList.employees.length);
+          Object.keys(o.employees).forEach(function (n) {
+            assert.equal(n, o.employees[n].emp_no);
+          });
           done();
         } else {
           done(new Error('cannot find the object'));

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var employeeIFS = {
-  _id: {
+  person_id: {
     type: String,
     lowercase: true,
     trim: true

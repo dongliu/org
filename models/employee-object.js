@@ -34,7 +34,7 @@ activeEmployeeObject.methods.fromList = function (list, cb) {
   this.hours = list.hours;
   this.employees = {};
   list.employees.forEach(function (e) {
-    this.employees[e._id] = e;
+    this.employees[e.emp_no] = e;
   });
   this.save(function (err, employees) {
     if (_.isFunction(cb)) {
