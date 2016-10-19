@@ -40,7 +40,7 @@ employees.get('/year/:y/month/:m/day/:d/json', function (req, res) {
 });
 
 employees.post('/now', function (req, res) {
-  getEmployeeList(true, function (err, response, list) {
+  getEmployeeList(true, function (err, list) {
     if (err) {
       log.error(err);
     }
