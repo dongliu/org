@@ -10,6 +10,8 @@ var assert = require('power-assert');
 mongoose.connection.close();
 var employeeListJob = require('../lib/task-schedule').employeeListJob;
 
+
+mongoose.Promise = global.Promise;
 var mongoOptions = {
   db: {
     native_parser: true

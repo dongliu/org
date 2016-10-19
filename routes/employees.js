@@ -2,7 +2,7 @@ var express = require('express');
 var employees = express.Router();
 var log = require('../lib/log');
 
-var EmployeeList = require('../models/employee').EmployeeList;
+var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var getEmployeeList = require('../lib/active-employee-list').getEmployeeList;
 
 employees.get('/', function (req, res) {
@@ -22,7 +22,7 @@ employees.get('/year/:y/month/:m/day/:d', function (req, res) {
 });
 
 employees.get('/year/:y/month/:m/day/:d/json', function (req, res) {
-  EmployeeList.findOne({
+  EmployeeObject.findOne({
     year: Number(req.params.y),
     month: Number(req.params.m),
     day: Number(req.params.d)

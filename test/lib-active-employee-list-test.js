@@ -10,6 +10,8 @@ var assert = require('power-assert');
 mongoose.connection.close();
 var getEmployeeList = require('../lib/active-employee-list').getEmployeeList;
 
+mongoose.Promise = global.Promise;
+
 var mongoOptions = {
   db: {
     native_parser: true
@@ -25,7 +27,8 @@ var mongoOptions = {
 
 var mongoURL = 'mongodb://localhost:27018/org_test';
 
-var EmployeeList = require('../models/employee').EmployeeList;
+var EmployeeList = require('../models/employee-list').EmployeeList;
+var EmployeeObject = require('../models/employee-object').EmployeeObject;
 
 describe('lib/active-employee-list', function () {
   this.timeout(60 * 1000);
@@ -35,12 +38,17 @@ describe('lib/active-employee-list', function () {
         return done(err);
       }
       debug('conn ready:  ' + mongoose.connection.readyState);
-      EmployeeList.remove({}, function (userErr) {
-        if (userErr) {
-          return done(userErr);
+      EmployeeList.remove({}, function (lErr) {
+        if (lErr) {
+          return done(lErr);
         }
-        done();
-      })
+        EmployeeObject.remove({}, function (oErr) {
+          if (oErr) {
+            return done(oErr);
+          }
+          done();
+        });
+      });
     });
   });
 
@@ -48,14 +56,14 @@ describe('lib/active-employee-list', function () {
     mongoose.disconnect(done);
   });
 
-  var _id;
   var year;
   var month;
   var day;
+  var eList;
 
-  describe('#getEmployeeList()', function () {
+  describe('#getEmployeeList() - not save', function () {
     it('get the current employee list', function (done) {
-      getEmployeeList(true, function (err, response, list) {
+      getEmployeeList(false, function (err, list) {
         assert.ifError(err);
         if (err) {
           return done(err);
@@ -63,7 +71,6 @@ describe('lib/active-employee-list', function () {
         var date = new Date();
         var temp = 'a';
         if (list) {
-          _id = list._id;
           assert.equal(list.year, date.getUTCFullYear());
           year = list.year;
           assert.equal(list.month, date.getUTCMonth() + 1);
@@ -77,13 +84,41 @@ describe('lib/active-employee-list', function () {
             assert.ok(e._id > temp);
             temp = e._id;
           });
+          done();
+        } else {
+          done(new Error('cannot get the list'));
         }
-        done();
       });
     });
   });
 
-  describe('#getEmployeeList()-save', function () {
+  describe('#getEmployeeList() - save', function () {
+    it('get the current employee list', function (done) {
+      getEmployeeList(true, function (err, list) {
+        assert.ifError(err);
+        if (err) {
+          return done(err);
+        }
+        var date = new Date();
+        if (list) {
+          debug('employee list and object saved');
+          assert.equal(list.year, date.getUTCFullYear());
+          year = list.year;
+          assert.equal(list.month, date.getUTCMonth() + 1);
+          month = list.month;
+          assert.equal(list.day, date.getUTCDate());
+          day = list.day;
+          assert.equal(list.hours, date.getUTCHours());
+          assert.equal(typeof list.employees, 'object');
+          done();
+        } else {
+          done(new Error('cannot get the list'));
+        }
+      });
+    });
+  });
+
+  describe('#getEmployeeList()-save-list', function () {
     it('saved the employee list in db', function (done) {
       var q = {
         year: year,
@@ -91,17 +126,42 @@ describe('lib/active-employee-list', function () {
         day: day
       };
       debug(q);
-      debug(_id);
-      EmployeeList.findOne(q, '_id', function (err, list) {
-        // debug(list);
+      EmployeeList.findOne(q).lean().exec(function (err, list) {
         assert.ifError(err);
         if (err) {
           return done(err);
         }
         if (list) {
-          assert.equal(list._id.toString(), _id.toString());
+          // assert.equal(list._id, _id.toString());
+          eList = list;
+          done();
+        } else {
+          done(new Error('cannot find the list'));
         }
-        done();
+      });
+    });
+  });
+
+  describe('#getEmployeeList()-save-object', function () {
+    it('saved the employee object in db', function (done) {
+      var q = {
+        year: year,
+        month: month,
+        day: day
+      };
+      debug(q);
+      EmployeeObject.findOne(q).lean().exec(function (err, o) {
+        assert.ifError(err);
+        if (err) {
+          return done(err);
+        }
+        if (o) {
+          debug(Object.keys(o.employees).length);
+          assert.equal(Object.keys(o.employees).length, eList.employees.length);
+          done();
+        } else {
+          done(new Error('cannot find the object'));
+        }
       });
     });
   });
