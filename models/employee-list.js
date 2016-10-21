@@ -31,10 +31,10 @@ var activeEmployeeList = new Schema({
  */
 activeEmployeeList.methods.setDate2Now = function () {
   var date = new Date();
-  this.year = date.getUTCFullYear();
-  this.month = date.getUTCMonth() + 1;
-  this.day = date.getUTCDate();
-  this.hours = date.getUTCHours();
+  this.year = date.getFullYear();
+  this.month = date.getMonth() + 1;
+  this.day = date.getDate();
+  this.hours = date.getHours();
 };
 
 

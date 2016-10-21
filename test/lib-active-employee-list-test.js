@@ -70,13 +70,13 @@ describe('lib/active-employee-list', function () {
         }
         var date = new Date();
         if (list) {
-          assert.equal(list.year, date.getUTCFullYear());
+          assert.equal(list.year, date.getFullYear());
           year = list.year;
-          assert.equal(list.month, date.getUTCMonth() + 1);
+          assert.equal(list.month, date.getMonth() + 1);
           month = list.month;
-          assert.equal(list.day, date.getUTCDate());
+          assert.equal(list.day, date.getDate());
           day = list.day;
-          assert.equal(list.hours, date.getUTCHours());
+          assert.equal(list.hours, date.getHours());
           // lower case
           list.employees.forEach(function (e) {
             assert.equal(e.person_id, e.person_id.toLowerCase());
@@ -99,14 +99,15 @@ describe('lib/active-employee-list', function () {
         var date = new Date();
         if (list) {
           debug('employee list and object saved');
-          assert.equal(list.year, date.getUTCFullYear());
+          assert.equal(list.year, date.getFullYear());
           year = list.year;
-          assert.equal(list.month, date.getUTCMonth() + 1);
+          assert.equal(list.month, date.getMonth() + 1);
           month = list.month;
-          assert.equal(list.day, date.getUTCDate());
+          assert.equal(list.day, date.getDate());
           day = list.day;
-          assert.equal(list.hours, date.getUTCHours());
+          assert.equal(list.hours, date.getHours());
           assert.equal(typeof list.employees, 'object');
+          debug(list);
           done();
         } else {
           done(new Error('cannot get the list'));
