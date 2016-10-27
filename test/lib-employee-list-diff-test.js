@@ -28,6 +28,7 @@ var mongoURL = 'mongodb://localhost:27018/org_test';
 
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var getEmployeeDiff = require('../lib/employee-list-diff').getEmployeeDiff;
+var deltaGroup = require('../lib/employee-list-diff').deltaGroup;
 var day1 = {
   year: 2016,
   month: 10,
@@ -133,7 +134,7 @@ describe('lib/employee-list-diff', function () {
     mongoose.disconnect(done);
   });
 
-  describe('#series() - add two test entries', function () {
+  describe('#series()', function () {
     it('add two test entries in mongodb', function (done) {
       // add two employee object to the db
       series([function (cb) {
@@ -157,6 +158,7 @@ describe('lib/employee-list-diff', function () {
     });
   });
 
+  var delta;
   describe('#getEmployeeDiff()', function () {
     it('empty diff for the same day', function (done) {
       var left = {
@@ -213,9 +215,20 @@ describe('lib/employee-list-diff', function () {
           done(err);
         }
         assert(!_.isEmpty(diff));
+        delta = diff;
         debug(diff);
         done();
       });
+    });
+  });
+
+  describe('#deltaGroup()', function () {
+    it('group the deltas', function () {
+      var group = deltaGroup(delta, {news: true, changes: true, leaves: true});
+      debug(group);
+      assert.ok(_.keys(group.news).length === 1);
+      assert.ok(_.keys(group.changes).length === 1);
+      assert.ok(_.keys(group.leaves).length === 1);
     });
   });
 });
