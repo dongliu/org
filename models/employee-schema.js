@@ -2,6 +2,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var employeeIFS = {
+  _id: {
+    type: String,
+    lowercase: true,
+    trim: true
+  },
   person_id: {
     type: String,
     lowercase: true,
@@ -41,7 +46,15 @@ var employeeIFS = {
   }
 };
 
-var employee = new Schema(employeeIFS);
+/**
+ * the embedded documents do not need a _id
+ * @type {Schema}
+ */
+var employee = new Schema(employeeIFS, { _id: false });
+
+/**
+ * the employee collection document still needs a _id
+ */
 var Employee = mongoose.model('Employee', employee);
 
 module.exports = {

@@ -61,8 +61,8 @@ describe('lib/active-employee-list', function () {
   var day;
   var eList;
 
-  describe('#getEmployeeList() - not save', function () {
-    it('get the current employee list', function (done) {
+  describe('#getEmployeeList()', function () {
+    it('get the current employee list, and not save', function (done) {
       getEmployeeList(false, function (err, list) {
         assert.ifError(err);
         if (err) {
@@ -87,10 +87,8 @@ describe('lib/active-employee-list', function () {
         }
       });
     });
-  });
 
-  describe('#getEmployeeList() - save', function () {
-    it('get the current employee list', function (done) {
+    it('get the current employee list, and save', function (done) {
       getEmployeeList(true, function (err, list) {
         assert.ifError(err);
         if (err) {
@@ -107,17 +105,15 @@ describe('lib/active-employee-list', function () {
           day = list.day;
           assert.equal(list.hours, date.getHours());
           assert.equal(typeof list.employees, 'object');
-          debug(list);
+          // debug(list);
           done();
         } else {
           done(new Error('cannot get the list'));
         }
       });
     });
-  });
 
-  describe('#getEmployeeList()-save-list', function () {
-    it('saved the employee list in db', function (done) {
+    it('saved the employee list in db, and get the list', function (done) {
       var q = {
         year: year,
         month: month,
@@ -131,16 +127,15 @@ describe('lib/active-employee-list', function () {
         }
         if (list) {
           eList = list;
+          // debug(list);
           done();
         } else {
           done(new Error('cannot find the list'));
         }
       });
     });
-  });
 
-  describe('#getEmployeeList()-save-object', function () {
-    it('saved the employee object in db', function (done) {
+    it('saved the employee object in db, and get the object', function (done) {
       var q = {
         year: year,
         month: month,
@@ -158,6 +153,7 @@ describe('lib/active-employee-list', function () {
           Object.keys(o.employees).forEach(function (n) {
             assert.equal(n, o.employees[n].emp_no);
           });
+          debug(o);
           done();
         } else {
           done(new Error('cannot find the object'));
