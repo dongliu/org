@@ -12,6 +12,44 @@ var EmployeeList = require('../models/employee-list').EmployeeList;
 var getEmployeeList = require('../lib/active-employee-list').getEmployeeList;
 var employeeListDiff = require('../lib/employee-list-diff');
 
+function validateDate(req, res, next) {
+  var left = {
+    year: Number(req.params.ly),
+    month: Number(req.params.lm),
+    day: Number(req.params.ld)
+  }
+
+  var right = {
+    year: Number(req.params.ry),
+    month: Number(req.params.rm),
+    day: Number(req.params.rd)
+  }
+
+  var lMoment = moment(left);
+  var rMoment = moment(right);
+
+  if (!lMoment.isValid()) {
+    return res.status(400).send('left side date is not valid');
+  }
+
+  if (!rMoment.isValid()) {
+    return res.status(400).send('right side date is not valid');
+  }
+
+  if (lMoment.isSame(rMoment, 'day')) {
+    return res.send({});
+  }
+
+  if (lMoment.isAfter(rMoment)) {
+    return res.status(400).send('right side date must be after left side date');
+  }
+  req.left = left;
+  req.right = right;
+  next();
+}
+
+
+
 employees.get('/', function (req, res) {
   res.send('need a resource view');
 });
@@ -61,29 +99,19 @@ employees.get('/diff/year/:y/month/:m/day/:d', function (req, res) {
     month: Number(req.params.m) - 1,
     day: Number(req.params.d)
   });
+  if(!right.isValid()) {
+    return res.status(400).send('invalid date');
+  }
   var left = right.subtract(1, 'days');
-  // render the view
+  res.redirect(req.baseUrl + '/year/' + left.year() + '/month/' + (left.month() + 1) + '/day/' + left.date() + '/diff/year/' + req.params.y + '/month/' + req.params.m + '/day/' + req.params.d);
+});
+
+employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd', validateDate, function (req, res) {
   res.send('need a view');
 });
 
-employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd', function (req, res) {
-  res.send('need a view');
-});
-
-employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json', function (req, res) {
-  var left = {
-    year: Number(req.params.ly),
-    month: Number(req.params.lm),
-    day: Number(req.params.ld)
-  }
-
-  var right = {
-    year: Number(req.params.ry),
-    month: Number(req.params.rm),
-    day: Number(req.params.rd)
-  }
-
-  employeeListDiff.getEmployeeDiff(left, right, function (err, diff) {
+employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json', validateDate, function (req, res) {
+  employeeListDiff.getEmployeeDiff(req.left, req.right, function (err, diff) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
@@ -92,20 +120,8 @@ employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json'
   });
 });
 
-employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/report/json', function (req, res) {
-  var left = {
-    year: Number(req.params.ly),
-    month: Number(req.params.lm),
-    day: Number(req.params.ld)
-  }
-
-  var right = {
-    year: Number(req.params.ry),
-    month: Number(req.params.rm),
-    day: Number(req.params.rd)
-  }
-
-  employeeListDiff.getEmployeeDiff(left, right, function (err, d) {
+employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/report/json', validateDate, function (req, res) {
+  employeeListDiff.getEmployeeDiff(req.left, req.right, function (err, d) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
