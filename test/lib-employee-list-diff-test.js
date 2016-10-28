@@ -29,7 +29,7 @@ var mongoURL = 'mongodb://localhost:27018/org_test';
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var getEmployeeDiff = require('../lib/employee-list-diff').getEmployeeDiff;
 var deltaGroup = require('../lib/employee-list-diff').deltaGroup;
-var day1 = {
+var day2 = {
   year: 2016,
   month: 10,
   day: 1,
@@ -71,7 +71,7 @@ var day1 = {
   }
 };
 
-var day2 = {
+var day1 = {
   year: 2016,
   month: 9,
   day: 30,
@@ -138,13 +138,13 @@ describe('lib/employee-list-diff', function () {
     it('add two test entries in mongodb', function (done) {
       // add two employee object to the db
       series([function (cb) {
-        var l1 = new EmployeeObject(day1);
-        l1.save(function (err, l) {
+        var l2 = new EmployeeObject(day2);
+        l2.save(function (err, l) {
           cb(err, l);
         });
       }, function (cb) {
-        var l2 = new EmployeeObject(day2);
-        l2.save(function (err, l) {
+        var l1 = new EmployeeObject(day1);
+        l1.save(function (err, l) {
           cb(err, l);
         });
       }], function (sErr, results) {
@@ -158,7 +158,7 @@ describe('lib/employee-list-diff', function () {
     });
   });
 
-  var delta;
+  var result;
   describe('#getEmployeeDiff()', function () {
     it('empty diff for the same day', function (done) {
       var left = {
@@ -209,14 +209,16 @@ describe('lib/employee-list-diff', function () {
         month: 10,
         day: 1
       };
-      getEmployeeDiff(left, right, function (err, diff) {
+      getEmployeeDiff(left, right, function (err, r) {
         assert.ifError(err);
         if (err) {
           done(err);
         }
-        assert(!_.isEmpty(diff));
-        delta = diff;
-        debug(diff);
+        assert(!_.isEmpty(r.diff));
+        assert.equal(left, r.left);
+        assert.equal(right, r.right);
+        result = r;
+        debug(r);
         done();
       });
     });
@@ -224,7 +226,7 @@ describe('lib/employee-list-diff', function () {
 
   describe('#deltaGroup()', function () {
     it('group the deltas', function () {
-      var group = deltaGroup(delta, {news: true, changes: true, leaves: true});
+      var group = deltaGroup(result.diff, {news: true, changes: true, leaves: true});
       debug(group);
       assert.ok(_.keys(group.news).length === 1);
       assert.ok(_.keys(group.changes).length === 1);

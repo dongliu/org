@@ -2,6 +2,7 @@ var express = require('express');
 var employees = express.Router();
 var log = require('../lib/log');
 var moment = require('moment');
+var series = require('async').series;
 
 var debug = require('debug')('org:employees');
 var jsondiffpatch = require('jsondiffpatch');
@@ -9,6 +10,7 @@ var jsondiffpatch = require('jsondiffpatch');
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var EmployeeList = require('../models/employee-list').EmployeeList;
 var getEmployeeList = require('../lib/active-employee-list').getEmployeeList;
+var employeeListDiff = require('../lib/employee-list-diff');
 
 employees.get('/', function (req, res) {
   res.send('need a resource view');
@@ -27,7 +29,7 @@ employees.get('/year/:y/month/:m/day/:d', function (req, res) {
 });
 
 employees.get('/year/:y/month/:m/day/:d/:type/json', function (req, res) {
-  if (['list','object'].indexOf(req.params.type) === -1) {
+  if (['list', 'object'].indexOf(req.params.type) === -1) {
     return res.status(404).send('do not know the type');
   }
   var collection;
@@ -54,9 +56,14 @@ employees.get('/year/:y/month/:m/day/:d/:type/json', function (req, res) {
 });
 
 employees.get('/diff/year/:y/month/:m/day/:d', function (req, res) {
-  var right = moment({year: Number(req.params.y), month: Number(req.params.m) - 1, day: Number(req.params.d)});
+  var right = moment({
+    year: Number(req.params.y),
+    month: Number(req.params.m) - 1,
+    day: Number(req.params.d)
+  });
   var left = right.subtract(1, 'days');
   // render the view
+  res.send('need a view');
 });
 
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd', function (req, res) {
@@ -76,44 +83,35 @@ employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json'
     day: Number(req.params.rd)
   }
 
-  var lMoment = moment(left);
-  var rMoment = moment(right);
-  if (lMoment.isSame(rMoment, 'day')) {
-    res.status(200).send('no different for the same day');
-  }
-
-  var le;
-  var re;
-  // check availability of left and right
-  EmployeeObject.findOne(left).lean().exex(function (err, l) {
+  employeeListDiff.getEmployeeDiff(left, right, function (err, diff) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
     }
-    if(l) {
-      le = l.employees;
-    }
+    res.json(diff);
   });
+});
 
-  EmployeeObject.findOne(right).lean().exex(function (err, r) {
+employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/report/json', function (req, res) {
+  var left = {
+    year: Number(req.params.ly),
+    month: Number(req.params.lm),
+    day: Number(req.params.ld)
+  }
+
+  var right = {
+    year: Number(req.params.ry),
+    month: Number(req.params.rm),
+    day: Number(req.params.rd)
+  }
+
+  employeeListDiff.getEmployeeDiff(left, right, function (err, d) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
     }
-    if(r) {
-      re = r.employees;
-    }
+    res.json({left: d.left, right: d.right, report: employeeListDiff.deltaGroup(d.diff)});
   });
-
-  if (!le || !re) {
-    return res.status(400).send('cannot find records for the days');
-  }
-
-  if (lMoment.isBefore(rMoment)) {
-    res.send(jsondiffpatch.diff(le, re));
-  } else {
-    res.send(jsondiffpatch.diff(re, le));
-  }
 });
 
 employees.post('/now', function (req, res) {
