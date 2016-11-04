@@ -28,6 +28,7 @@ var mongoURL = 'mongodb://localhost:27018/org_test';
 
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var getEmployeeDiff = require('../lib/employee-list-diff').getEmployeeDiff;
+var employeeDiffHtml = require('../lib/employee-list-diff').employeeDiffHtml;
 var deltaGroup = require('../lib/employee-list-diff').deltaGroup;
 var day2 = {
   year: 2016,
@@ -198,7 +199,7 @@ describe('lib/employee-list-diff', function () {
       });
     });
 
-    it('call back with the diff', function (done) {
+    it('call back with diff json', function (done) {
       var left = {
         year: 2016,
         month: 9,
@@ -219,6 +220,30 @@ describe('lib/employee-list-diff', function () {
         assert.equal(right, r.right);
         result = r;
         debug(r);
+        done();
+      });
+    });
+  });
+
+  describe('#employeeDiffHtml()', function () {
+    it('call back with diff html', function (done) {
+      var left = {
+        year: 2016,
+        month: 9,
+        day: 30
+      };
+      var right = {
+        year: 2016,
+        month: 10,
+        day: 1
+      };
+      employeeDiffHtml(left, right, function (err, r) {
+        assert.ifError(err);
+        if (err) {
+          done(err);
+        }
+        assert(!_.isEmpty(r.diffHtml));
+        debug(r.diffHtml);
         done();
       });
     });
