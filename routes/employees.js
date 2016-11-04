@@ -2,10 +2,8 @@ var express = require('express');
 var employees = express.Router();
 var log = require('../lib/log');
 var moment = require('moment');
-var series = require('async').series;
 
 var debug = require('debug')('org:employees');
-var jsondiffpatch = require('jsondiffpatch');
 
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var EmployeeList = require('../models/employee-list').EmployeeList;
@@ -37,7 +35,7 @@ function validateDate(req, res, next) {
   }
 
   if (lMoment.isSame(rMoment, 'day')) {
-    return res.send({});
+    return res.status(200).send('left and right are the same');
   }
 
   if (lMoment.isAfter(rMoment)) {
@@ -47,8 +45,6 @@ function validateDate(req, res, next) {
   req.right = right;
   next();
 }
-
-
 
 employees.get('/', function (req, res) {
   res.send('need a resource view');
@@ -107,7 +103,13 @@ employees.get('/diff/year/:y/month/:m/day/:d', function (req, res) {
 });
 
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd', validateDate, function (req, res) {
-  res.send('need a view');
+  employeeListDiff.employeeDiffHtml(req.left, req.right, function (err, result) {
+    if (err) {
+      log.error(err);
+      return res.status(500).send(err.message);
+    }
+    return res.render('employee-diff', result);
+  });
 });
 
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json', validateDate, function (req, res) {

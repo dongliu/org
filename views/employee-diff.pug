@@ -1,0 +1,12 @@
+extends layout.pug
+
+block head
+  title FRIB org application
+  link(rel='stylesheet', href='/jsondiffpatch/public/formatters-styles/html.css')
+
+block content
+  .main
+    h1 employees changes
+    hr.soften
+    div(id = 'diff')
+      != result.diffHtml
