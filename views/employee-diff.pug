@@ -4,9 +4,15 @@ block head
   title FRIB org application
   link(rel='stylesheet', href='/jsondiffpatch/public/formatters-styles/html.css')
 
+mixin date(d)
+  span.date= d.month + '/' + d.day + '/' + d.year
+
 block content
   .main
-    h1 employees changes
+    h1 employees changes from
+      +date(left)
+      = ' to '
+      +date(right)
     hr.soften
     div(id = 'diff')
       != diffHtml
