@@ -38,7 +38,7 @@ $(function () {
     }
 
     if (fromSelect.year === toSelect.year && fromSelect.month === toSelect.month && fromSelect.day === toSelect.day) {
-      return window.open('/employees/diff/year' + fromSelect.year + '/month/' + (fromSelect.month + 1) + '/day/' + fromSelect.day, 'diff dates');
+      return window.open('/employees/diff/year/' + fromSelect.year + '/month/' + (fromSelect.month + 1) + '/day/' + fromSelect.day, 'diff dates');
     }
 
     var from = fromSelect;
@@ -49,6 +49,6 @@ $(function () {
       to = fromSelect;
     }
 
-    window.open('/employees/year' + from.year + '/month/' + (from.month + 1) + '/day/' + from.day + '/diff/year/' + +to.year + '/month/' + (to.month + 1) + '/day/' + to.day, 'diff dates')
+    window.open('/employees/year/' + from.year + '/month/' + (from.month + 1) + '/day/' + from.day + '/diff/year/' + +to.year + '/month/' + (to.month + 1) + '/day/' + to.day, 'diff dates')
   });
 });
