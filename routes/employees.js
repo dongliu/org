@@ -47,15 +47,15 @@ function validateDate(req, res, next) {
 }
 
 employees.get('/', function (req, res) {
-  res.send('need a resource view');
+  res.render('employees');
 });
 
-employees.get('/today', function (req, res) {
+employees.get('/diff/today', function (req, res) {
   var today = new Date();
   var y = today.getFullYear();
   var m = today.getMonth() + 1;
   var d = today.getDate();
-  res.redirect(req.baseUrl + '/year/' + y + '/month/' + m + '/day/' + d);
+  res.redirect(req.baseUrl + '/diff/year/' + y + '/month/' + m + '/day/' + d);
 });
 
 employees.get('/year/:y/month/:m/day/:d', function (req, res) {

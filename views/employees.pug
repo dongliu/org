@@ -1,0 +1,36 @@
+extends layout.pug
+
+block head
+  title FRIB employee changes
+  link(rel='stylesheet', href='/pickadate/lib/themes/default.css')
+  link(rel='stylesheet', href='/pickadate/lib/themes/default.date.css')
+
+mixin date(d)
+  span.date= d.month + '/' + d.day + '/' + d.year
+
+block content
+  //- .main
+  h1 Choose a date
+  form.form-inline
+    .form-group
+      input.form-control(id='date1')
+    = ' '
+    button.btn.btn-primary(id='diff1') Get the change
+
+  h1 Or two dates
+  form.form-inline
+    .form-group
+      label From:
+      input.form-control(id='from')
+    = ' '
+    .form-group
+      label To:
+      input.form-control(id='to')
+    = ' '
+    button.btn.btn-primary(id='diff2') Get the change
+
+block js
+  script(type='text/javascript', src='/pickadate/lib/picker.js')
+  script(type='text/javascript', src='/pickadate/lib/picker.date.js')
+  script(type='text/javascript', src='/pickadate/lib/legacy.js')
+  script(type='text/javascript', src='/javascripts/employees.js')
