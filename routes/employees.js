@@ -50,6 +50,14 @@ employees.get('/', function (req, res) {
   res.render('employees');
 });
 
+employees.get('/today/:type/json', function (req, res) {
+  var today = new Date();
+  var y = today.getFullYear();
+  var m = today.getMonth() + 1;
+  var d = today.getDate();
+  res.redirect(req.baseUrl + '/year/' + y + '/month/' + m + '/day/' + d + '/' + req.params.type + '/json');
+});
+
 employees.get('/diff/today', function (req, res) {
   var today = new Date();
   var y = today.getFullYear();
