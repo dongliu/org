@@ -15,8 +15,10 @@ var employees = require('./routes/employees');
 var app = express();
 
 var employeeListJob = require('./lib/task-schedule').employeeListJob;
+var orgListJob = require('./lib/task-schedule').orgListJob;
 
 var dailyELJ;
+var dailyOLJ;
 
 // mongoDB starts
 var mongoose = require('mongoose');
@@ -50,7 +52,7 @@ if (config.has('mongo.auth')) {
 mongoose.connection.once('connected', function () {
   log.info('Mongoose default connection opened.');
   // start the daily jobs
-  dailyELJ = employeeListJob(config.get('service.schedule'), function (err) {
+  dailyELJ = employeeListJob(config.get('service.employee-schedule'), function (err) {
     if (err) {
       log.error(err);
     } else {
@@ -62,6 +64,20 @@ mongoose.connection.once('connected', function () {
   });
   dailyELJ.on('canceled', function () {
     log.warn('daily employee list job canceled');
+  });
+
+  dailyOLJ = orgListJob(config.get('service.org-schedule'), function (err) {
+    if (err) {
+      log.error(err);
+    } else {
+      log.info('daily org list saved');
+    }
+  });
+  dailyOLJ.on('run', function () {
+    log.info('daily org list job run');
+  });
+  dailyOLJ.on('canceled', function () {
+    log.warn('daily org list job canceled');
   });
 });
 
