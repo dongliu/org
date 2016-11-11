@@ -8,43 +8,9 @@ var debug = require('debug')('org:employees');
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var EmployeeList = require('../models/employee-list').EmployeeList;
 var getEmployeeList = require('../lib/active-employee-list').getEmployeeList;
-var employeeListDiff = require('../lib/employee-list-diff');
+var listDiff = require('../lib/list-diff');
 
-function validateDate(req, res, next) {
-  var left = {
-    year: Number(req.params.ly),
-    month: Number(req.params.lm),
-    day: Number(req.params.ld)
-  }
-
-  var right = {
-    year: Number(req.params.ry),
-    month: Number(req.params.rm),
-    day: Number(req.params.rd)
-  }
-
-  var lMoment = moment(left);
-  var rMoment = moment(right);
-
-  if (!lMoment.isValid()) {
-    return res.status(400).send('left side date is not valid');
-  }
-
-  if (!rMoment.isValid()) {
-    return res.status(400).send('right side date is not valid');
-  }
-
-  if (lMoment.isSame(rMoment, 'day')) {
-    return res.status(200).send('left and right are the same');
-  }
-
-  if (lMoment.isAfter(rMoment)) {
-    return res.status(400).send('right side date must be after left side date');
-  }
-  req.left = left;
-  req.right = right;
-  next();
-}
+var validateDate = require('../lib/req-utils').validateDate;
 
 employees.get('/', function (req, res) {
   res.render('employees');
@@ -127,7 +93,7 @@ employees.get('/diff/year/:y/month/:m/day/:d', function (req, res) {
  * GET the diff view between the left day and the right day
  */
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd', validateDate, function (req, res) {
-  employeeListDiff.employeeDiffHtml(req.left, req.right, function (err, result) {
+  listDiff.diffHtml(req.left, req.right, EmployeeObject, function (err, result) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
@@ -140,7 +106,7 @@ employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd', val
  * GET the diff json between the left day and the right day
  */
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json', validateDate, function (req, res) {
-  employeeListDiff.getEmployeeDiff(req.left, req.right, function (err, diff) {
+  listDiff.getDiff(req.left, req.right, EmployeeObject, function (err, diff) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
@@ -153,12 +119,12 @@ employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json'
  * GET the diff report json between the left day and the right day
  */
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/report/json', validateDate, function (req, res) {
-  employeeListDiff.getEmployeeDiff(req.left, req.right, function (err, d) {
+  listDiff.getDiff(req.left, req.right, EmployeeObject, function (err, d) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
     }
-    res.json({left: d.left, right: d.right, report: employeeListDiff.deltaGroup(d.diff)});
+    res.json({left: d.left, right: d.right, report: listDiff.deltaGroup(d.diff)});
   });
 });
 
