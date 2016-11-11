@@ -27,9 +27,9 @@ var mongoOptions = {
 var mongoURL = 'mongodb://localhost:27018/org_test';
 
 var EmployeeObject = require('../models/employee-object').EmployeeObject;
-var getEmployeeDiff = require('../lib/employee-list-diff').getEmployeeDiff;
-var employeeDiffHtml = require('../lib/employee-list-diff').employeeDiffHtml;
-var deltaGroup = require('../lib/employee-list-diff').deltaGroup;
+var getDiff = require('../lib/list-diff').getDiff;
+var diffHtml = require('../lib/list-diff').diffHtml;
+var deltaGroup = require('../lib/list-diff').deltaGroup;
 var day2 = {
   year: 2016,
   month: 10,
@@ -167,7 +167,7 @@ describe('lib/employee-list-diff', function () {
         month: 10,
         day: 1
       };
-      getEmployeeDiff(left, left, function (err, diff) {
+      getDiff(left, left, EmployeeObject, function (err, diff) {
         assert.ifError(err);
         if (err) {
           done(err);
@@ -189,7 +189,7 @@ describe('lib/employee-list-diff', function () {
         month: 9,
         day: 30
       };
-      getEmployeeDiff(left, right, function (err, diff) {
+      getDiff(left, right, EmployeeObject, function (err, diff) {
         debug(err.message);
         if (!err) {
           assert.fail(err.message, 'cannot find records for ...', null, 'is like');
@@ -210,7 +210,7 @@ describe('lib/employee-list-diff', function () {
         month: 10,
         day: 1
       };
-      getEmployeeDiff(left, right, function (err, r) {
+      getDiff(left, right, EmployeeObject, function (err, r) {
         assert.ifError(err);
         if (err) {
           done(err);
@@ -237,7 +237,7 @@ describe('lib/employee-list-diff', function () {
         month: 10,
         day: 1
       };
-      employeeDiffHtml(left, right, function (err, r) {
+      diffHtml(left, right, EmployeeObject, function (err, r) {
         assert.ifError(err);
         if (err) {
           done(err);
