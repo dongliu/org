@@ -11,6 +11,7 @@ var config = require('config');
 
 var routes = require('./routes/index');
 var employees = require('./routes/employees');
+var org = require('./routes/org');
 
 var app = express();
 
@@ -122,6 +123,7 @@ app.use(express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', routes);
 app.use('/employees', employees);
+app.use('/org', org);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

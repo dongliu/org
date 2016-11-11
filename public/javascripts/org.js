@@ -1,14 +1,14 @@
 $(function () {
   var date1 = $('#date1').pickadate({
-    min: new Date(2016, 10, 1),
+    min: new Date(2016, 10, 11),
     max: true
   });
   var date1Picker = date1.pickadate('picker');
   var from = $('#from').pickadate({
-    min: new Date(2016, 10, 1),
+    min: new Date(2016, 10, 11),
   });
   var to = $('#to').pickadate({
-    min: new Date(2016, 10, 1),
+    min: new Date(2016, 10, 11),
     max: true
   });
 
@@ -19,9 +19,9 @@ $(function () {
     e.preventDefault();
     var select = date1Picker.get('select');
     if (select) {
-      window.open('/employees/diff/year/' + select.year + '/month/' + (select.month + 1) + '/day/' + select.date);
+      window.open('/org/diff/year/' + select.year + '/month/' + (select.month + 1) + '/day/' + select.date);
     } else {
-      window.open('/employees/diff/today', 'diff today');
+      window.open('/org/diff/today', 'diff today');
     }
   });
 
@@ -37,7 +37,7 @@ $(function () {
     }
 
     if (fromSelect.year === toSelect.year && fromSelect.month === toSelect.month && fromSelect.date === toSelect.date) {
-      return window.open('/employees/diff/year/' + fromSelect.year + '/month/' + (fromSelect.month + 1) + '/day/' + fromSelect.date, 'diff dates');
+      return window.open('/org/diff/year/' + fromSelect.year + '/month/' + (fromSelect.month + 1) + '/day/' + fromSelect.date, 'diff dates');
     }
 
     var from = fromSelect;
@@ -48,6 +48,6 @@ $(function () {
       to = fromSelect;
     }
 
-    window.open('/employees/year/' + from.year + '/month/' + (from.month + 1) + '/day/' + from.date + '/diff/year/' + +to.year + '/month/' + (to.month + 1) + '/day/' + to.date, 'diff dates')
+    window.open('/org/year/' + from.year + '/month/' + (from.month + 1) + '/day/' + from.date + '/diff/year/' + +to.year + '/month/' + (to.month + 1) + '/day/' + to.date, 'diff dates')
   });
 });

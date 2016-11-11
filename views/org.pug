@@ -1,7 +1,7 @@
 extends layout.pug
 
 block head
-  title FRIB employee changes
+  title FRIB org changes
   link(rel='stylesheet', href='/pickadate/lib/themes/default.css')
   link(rel='stylesheet', href='/pickadate/lib/themes/default.date.css')
 
@@ -10,7 +10,7 @@ mixin date(d)
 
 block content
   //- .main
-  h1 Choose a date to see employee changes
+  h1 Choose a date to see org changes
   form.form-inline
     .form-group
       input.form-control(id='date1')
@@ -33,4 +33,4 @@ block js
   script(type='text/javascript', src='/pickadate/lib/picker.js')
   script(type='text/javascript', src='/pickadate/lib/picker.date.js')
   script(type='text/javascript', src='/pickadate/lib/legacy.js')
-  script(type='text/javascript', src='/javascripts/employees.js')
+  script(type='text/javascript', src='/javascripts/org.js')
