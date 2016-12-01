@@ -160,24 +160,7 @@ describe('lib/employee-list-diff', function () {
   });
 
   var result;
-  describe('#getEmployeeDiff()', function () {
-    it('empty diff for the same day', function (done) {
-      var left = {
-        year: 2016,
-        month: 10,
-        day: 1
-      };
-      getDiff(left, left, EmployeeObject, function (err, diff) {
-        assert.ifError(err);
-        if (err) {
-          done(err);
-        }
-        assert(_.isEmpty(diff));
-        done();
-      });
-
-    });
-
+  describe('#getDiff()', function () {
     it('callback error because cannot found the day', function (done) {
       var left = {
         year: 2016,
@@ -225,7 +208,7 @@ describe('lib/employee-list-diff', function () {
     });
   });
 
-  describe('#employeeDiffHtml()', function () {
+  describe('#diffHtml()', function () {
     it('call back with diff html', function (done) {
       var left = {
         year: 2016,
