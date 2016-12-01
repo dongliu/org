@@ -160,7 +160,7 @@ describe('lib/employee-list-diff', function () {
   });
 
   var result;
-  describe('#getEmployeeDiff()', function () {
+  describe('#getDiff()', function () {
     it('empty diff for the same day', function (done) {
       var left = {
         year: 2016,
@@ -225,7 +225,7 @@ describe('lib/employee-list-diff', function () {
     });
   });
 
-  describe('#employeeDiffHtml()', function () {
+  describe('#diffHtml()', function () {
     it('call back with diff html', function (done) {
       var left = {
         year: 2016,
