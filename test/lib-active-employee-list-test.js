@@ -104,7 +104,7 @@ describe('lib/active-employee-list', function () {
           assert.equal(list.day, date.getDate());
           day = list.day;
           assert.equal(list.hours, date.getHours());
-          assert.equal(typeof list.employees, 'object');
+          assert.equal(typeof list.employees, 'array');
           // debug(list);
           done();
         } else {

@@ -195,7 +195,7 @@ describe('lib/org-list', function () {
           assert.equal(list.day, date.getDate());
           day = list.day;
           assert.equal(list.hours, date.getHours());
-          assert.equal(typeof list.units, 'object');
+          assert.equal(typeof list.units, 'array');
           // debug(list);
           done();
         } else {
