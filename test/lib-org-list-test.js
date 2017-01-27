@@ -195,8 +195,8 @@ describe('lib/org-list', function () {
           assert.equal(list.day, date.getDate());
           day = list.day;
           assert.equal(list.hours, date.getHours());
-          assert.equal(typeof list.units, 'array');
           // debug(list);
+          assert(Array.isArray(list.units));
           done();
         } else {
           done(new Error('cannot get the list'));
