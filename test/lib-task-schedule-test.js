@@ -27,7 +27,7 @@ var mongoOptions = {
 
 var mongoURL = 'mongodb://localhost:27018/org_test';
 
-var EmployeeList = require('../models/employee').EmployeeList;
+var EmployeeList = require('../models/employee-list').EmployeeList;
 
 describe('lib/task-schedule', function () {
   this.timeout(300 * 1000);
