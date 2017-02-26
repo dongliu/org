@@ -1,0 +1,25 @@
+extends layout.pug
+
+block head
+  title FRIB auth demo
+
+block content
+  h1 Find an active employee by name
+  form.form-inline
+    .form-group
+      label Employee name : 
+      input.form-control(id='employee')
+    = ' '
+    button.btn.btn-primary(id='show-employee-details') Get the details
+  h2(id='employee-id')
+  p(id='employee-details', display: 'none')
+
+  h1 Find an org unit by name
+  form.form-inline
+    .form-group
+      label Unit name : 
+      input.form-control(id='unit')
+    button.btn.btn-primary(id='unit-details') Get the details
+
+block js
+  script(type='text/javascript', src='/javascripts/auth.js')
