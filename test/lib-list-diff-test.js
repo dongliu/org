@@ -30,6 +30,8 @@ var EmployeeObject = require('../models/employee-object').EmployeeObject;
 var getDiff = require('../lib/list-diff').getDiff;
 var diffHtml = require('../lib/list-diff').diffHtml;
 var deltaGroup = require('../lib/list-diff').deltaGroup;
+var findSup = require('../lib/list-diff').findSup;
+var getReport = require('../lib/list-diff').getReport;
 var day2 = {
   year: 2016,
   month: 10,
@@ -234,11 +236,49 @@ describe('lib/employee-list-diff', function () {
 
   describe('#deltaGroup()', function () {
     it('group the deltas', function () {
-      var group = deltaGroup(result.diff, {news: true, changes: true, leaves: true});
+      var group = deltaGroup(result.diff);
       debug(group);
       assert.ok(_.keys(group.news).length === 1);
       assert.ok(_.keys(group.changes).length === 1);
       assert.ok(_.keys(group.leaves).length === 1);
+    });
+  });
+
+  describe('#findSup()', function () {
+    it('find the right supervisor', function () {
+      var sup = findSup(day1.employees['4'], day1.employees);
+      assert.ok(sup.emp_no === day1.employees['4'].sup_emp_no);
+    });
+
+    it('find no supervisor', function () {
+      var sup = findSup({}, day1.employees);
+      assert.ok(typeof sup === 'undefined');
+    });
+  });
+
+  describe('#getReport()', function () {
+    it('generate a report with supervisor information', function (done) {
+      var left = {
+        year: 2016,
+        month: 9,
+        day: 30
+      };
+      var right = {
+        year: 2016,
+        month: 10,
+        day: 1
+      };
+      getReport(left, right, function (err, r) {
+        assert.ifError(err);
+        if (err) {
+          done(err);
+        }
+        assert(!_.isEmpty(r.report));
+        debug(r.report.leaves);
+        assert.equal(left, r.left);
+        assert.equal(right, r.right);
+        done();
+      });
     });
   });
 });

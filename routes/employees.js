@@ -119,12 +119,12 @@ employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/json'
  * GET the diff report json between the left day and the right day
  */
 employees.get('/year/:ly/month/:lm/day/:ld/diff/year/:ry/month/:rm/day/:rd/report/json', validateDate, function (req, res) {
-  listDiff.getDiff(req.left, req.right, EmployeeObject, function (err, d) {
+  listDiff.getReport(req.left, req.right, function (err, r) {
     if (err) {
       log.error(err);
       return res.status(500).send(err.message);
     }
-    res.json({left: d.left, right: d.right, report: listDiff.deltaGroup(d.diff)});
+    res.json(r);
   });
 });
 
