@@ -66,12 +66,6 @@ var orgIFS = {
  */
 var org = new Schema(orgIFS, { _id: false });
 
-/**
- * the employee collection document still needs a _id
- */
-var Org = mongoose.model('Org', org);
-
 module.exports = {
-  orgSchema: org,
-  Org: Org
+  orgSchema: org
 };

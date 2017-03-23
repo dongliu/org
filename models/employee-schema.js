@@ -52,12 +52,6 @@ var employeeIFS = {
  */
 var employee = new Schema(employeeIFS, { _id: false });
 
-/**
- * the employee collection document still needs a _id
- */
-var Employee = mongoose.model('Employee', employee);
-
 module.exports = {
-  employeeSchema: employee,
-  Employee: Employee
+  employeeSchema: employee
 };
