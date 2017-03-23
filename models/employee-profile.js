@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var ObjectId = Schema.Types.ObjectId;
 
 var employee = new Schema({
   valid_since: {
@@ -40,13 +39,13 @@ var employee = new Schema({
     type: String,
     trim: true
   },
-  sup_emp: {
-    type: ObjectId,
-    ref: 'Employee'
+  sup_emp_no: {
+    type: String,
+    trim: true
   },
-  org: {
-    type: ObjectId,
-    ref: 'Org'
+  org_code: {
+    type: String,
+    trim: true
   },
   emp_cat_name: {
     type: String,
